@@ -4,6 +4,10 @@ import "errors"
 
 var (
 	ErrEmptyName                 = errors.New("name is required")
+	ErrEmptyEmail                = errors.New("email is required")
+	ErrPasswordTooShort          = errors.New("password must be at least 8 characters")
+	ErrEmailTaken                = errors.New("email already in use")
+	ErrInvalidCredentials        = errors.New("invalid email or password")
 	ErrInvalidTimezone           = errors.New("invalid IANA timezone")
 	ErrInvalidHourRange          = errors.New("from_hour must be less than to_hour")
 	ErrActivityOverlap           = errors.New("activities overlap within the same ring")
