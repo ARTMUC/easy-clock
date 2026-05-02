@@ -6,7 +6,7 @@
 - [x] #2  Zdefiniuj modele domenowe (internal/domain/)
 - [x] #3  Zdefiniuj interfejsy repozytoriów
 - [x] #4  Zaimplementuj repozytoria GORM (internal/infrastructure/persistence/)
-- [ ] #5  Zaimplementuj serwisy aplikacyjne (internal/app/)
+- [x] #5  Zaimplementuj serwisy aplikacyjne (internal/app/)
 - [ ] #6  Zaimplementuj middleware auth JWT (internal/middleware/)
 - [ ] #7  Zaimplementuj handlery HTTP i routing (internal/handler/ + internal/server/)
 - [ ] #8  Zaimplementuj widok zegara (frontend — clock view)
