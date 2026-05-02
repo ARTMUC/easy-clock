@@ -5,7 +5,7 @@
 - [x] #1  Napisz migracje SQL (001–007)
 - [x] #2  Zdefiniuj modele domenowe (internal/domain/)
 - [x] #3  Zdefiniuj interfejsy repozytoriów
-- [ ] #4  Zaimplementuj repozytoria GORM (internal/infrastructure/persistence/)
+- [x] #4  Zaimplementuj repozytoria GORM (internal/infrastructure/persistence/)
 - [ ] #5  Zaimplementuj serwisy aplikacyjne (internal/app/)
 - [ ] #6  Zaimplementuj middleware auth JWT (internal/middleware/)
 - [ ] #7  Zaimplementuj handlery HTTP i routing (internal/handler/ + internal/server/)
