@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"fmt"
 
 	"starter/internal/domain"
 )
@@ -26,48 +27,57 @@ func NewScheduleService(
 
 func (s *ScheduleService) GetSchedule(ctx context.Context, childID, userID string) ([]domain.DayAssignment, error) {
 	if err := s.assertChildOwner(ctx, childID, userID); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("ScheduleService.GetSchedule: %w", err)
 	}
-	return s.scheduleRepo.FindByChildID(ctx, childID)
+	assignments, err := s.scheduleRepo.FindByChildID(ctx, childID)
+	if err != nil {
+		return nil, fmt.Errorf("ScheduleService.GetSchedule: %w", err)
+	}
+	return assignments, nil
 }
 
-// AssignProfileToDays bulk-assigns one profile to multiple days of the week.
 func (s *ScheduleService) AssignProfileToDays(ctx context.Context, childID, userID, profileID string, days []int) error {
 	if err := s.assertChildOwner(ctx, childID, userID); err != nil {
-		return err
+		return fmt.Errorf("ScheduleService.AssignProfileToDays: %w", err)
 	}
 	profile, err := s.profileRepo.FindByID(ctx, profileID)
 	if err != nil {
-		return err
+		return fmt.Errorf("ScheduleService.AssignProfileToDays: find profile: %w", err)
 	}
 	if profile.ChildID != childID {
-		return domain.ErrNotFound
+		return fmt.Errorf("ScheduleService.AssignProfileToDays: profile does not belong to child: %w", domain.ErrNotFound)
 	}
 	assignments := make([]domain.DayAssignment, 0, len(days))
 	for _, day := range days {
 		a, err := domain.NewDayAssignment(childID, day, profileID)
 		if err != nil {
-			return err
+			return fmt.Errorf("ScheduleService.AssignProfileToDays: build assignment day=%d: %w", day, err)
 		}
 		assignments = append(assignments, *a)
 	}
-	return s.scheduleRepo.UpsertMany(ctx, assignments)
+	if err := s.scheduleRepo.UpsertMany(ctx, assignments); err != nil {
+		return fmt.Errorf("ScheduleService.AssignProfileToDays: upsert: %w", err)
+	}
+	return nil
 }
 
 func (s *ScheduleService) ClearDay(ctx context.Context, childID, userID string, day int) error {
 	if err := s.assertChildOwner(ctx, childID, userID); err != nil {
-		return err
+		return fmt.Errorf("ScheduleService.ClearDay: %w", err)
 	}
-	return s.scheduleRepo.DeleteDay(ctx, childID, day)
+	if err := s.scheduleRepo.DeleteDay(ctx, childID, day); err != nil {
+		return fmt.Errorf("ScheduleService.ClearDay: %w", err)
+	}
+	return nil
 }
 
 func (s *ScheduleService) assertChildOwner(ctx context.Context, childID, userID string) error {
 	c, err := s.childRepo.FindByID(ctx, childID)
 	if err != nil {
-		return err
+		return fmt.Errorf("assertChildOwner: find child: %w", err)
 	}
 	if c.UserID != userID {
-		return domain.ErrNotFound
+		return fmt.Errorf("assertChildOwner: %w", domain.ErrNotFound)
 	}
 	return nil
 }

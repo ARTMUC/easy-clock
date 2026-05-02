@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"errors"
+	"fmt"
 	"time"
 
 	"starter/internal/domain"
@@ -34,19 +35,19 @@ func NewClockService(
 func (s *ClockService) Resolve(ctx context.Context, clockToken string, now time.Time) (*domain.ClockState, error) {
 	child, err := s.childRepo.FindByClockToken(ctx, clockToken)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("ClockService.Resolve: find child: %w", err)
 	}
 
 	loc, err := time.LoadLocation(child.Timezone)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("ClockService.Resolve: load timezone %q: %w", child.Timezone, err)
 	}
 	localNow := now.In(loc)
 
 	// 1. One-off events — highest priority.
 	events, err := s.eventRepo.FindForDate(ctx, child.ID, localNow.Format("2006-01-02"))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("ClockService.Resolve: find events: %w", err)
 	}
 	for i := range events {
 		e := &events[i]
@@ -59,12 +60,12 @@ func (s *ClockService) Resolve(ctx context.Context, clockToken string, now time.
 	weekday := int(localNow.Weekday())
 	assignment, err := s.scheduleRepo.FindDay(ctx, child.ID, weekday)
 	if err != nil && !errors.Is(err, domain.ErrNotFound) {
-		return nil, err
+		return nil, fmt.Errorf("ClockService.Resolve: find schedule day: %w", err)
 	}
 	if assignment != nil {
 		profile, err := s.profileRepo.FindWithActivities(ctx, assignment.ProfileID)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("ClockService.Resolve: find schedule profile: %w", err)
 		}
 		return resolveFromProfile(profile, localNow), nil
 	}
@@ -73,7 +74,7 @@ func (s *ClockService) Resolve(ctx context.Context, clockToken string, now time.
 	if child.DefaultProfileID != "" {
 		profile, err := s.profileRepo.FindWithActivities(ctx, child.DefaultProfileID)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("ClockService.Resolve: find default profile: %w", err)
 		}
 		return resolveFromProfile(profile, localNow), nil
 	}
@@ -83,9 +84,9 @@ func (s *ClockService) Resolve(ctx context.Context, clockToken string, now time.
 
 func resolveFromProfile(p *domain.Profile, localNow time.Time) *domain.ClockState {
 	state := &domain.ClockState{
-		ProfileID:    p.ID,
-		ProfileName:  p.Name,
-		ProfileColor: p.Color,
+		ProfileID:     p.ID,
+		ProfileName:   p.Name,
+		ProfileColor:  p.Color,
 		AllActivities: p.Activities,
 	}
 	h := localNow.Hour()
@@ -100,13 +101,9 @@ func resolveFromProfile(p *domain.Profile, localNow time.Time) *domain.ClockStat
 }
 
 func resolveFromEvent(e *domain.Event, localNow time.Time) *domain.ClockState {
-	// Event uses an existing profile — load activities from it (already preloaded via Preload).
 	if e.ProfileID != "" {
-		return &domain.ClockState{
-			ProfileID: e.ProfileID,
-		}
+		return &domain.ClockState{ProfileID: e.ProfileID}
 	}
-	// Event has inline activities.
 	activities := make([]domain.Activity, len(e.Activities))
 	h := localNow.Hour()
 	state := &domain.ClockState{}
