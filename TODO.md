@@ -3,7 +3,7 @@
 ## Status
 
 - [x] #1  Napisz migracje SQL (001–007)
-- [ ] #2  Zdefiniuj modele domenowe (internal/domain/)
+- [x] #2  Zdefiniuj modele domenowe (internal/domain/)
 - [ ] #3  Zdefiniuj interfejsy repozytoriów
 - [ ] #4  Zaimplementuj repozytoria GORM (internal/infrastructure/persistence/)
 - [ ] #5  Zaimplementuj serwisy aplikacyjne (internal/app/)
