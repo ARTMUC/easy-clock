@@ -7,6 +7,7 @@ import (
 type Config struct {
 	Port             string
 	SessionSecret    string
+	JWTSecret        string
 	BrevoAPIKey      string
 	BrevoSenderEmail string
 	BrevoSenderName  string
@@ -17,6 +18,7 @@ func New() *Config {
 	return &Config{
 		Port:             getEnv("PORT", "8080"),
 		SessionSecret:    getEnv("SESSION_SECRET", "change-me-in-production-32chars!!"),
+		JWTSecret:        getEnv("JWT_SECRET", "change-me-in-production-jwt-secret!!"),
 		BrevoAPIKey:      os.Getenv("BREVO_API_KEY"),
 		BrevoSenderEmail: getEnv("BREVO_SENDER_EMAIL", "noreply@example.com"),
 		BrevoSenderName:  getEnv("BREVO_SENDER_NAME", "Starter App"),

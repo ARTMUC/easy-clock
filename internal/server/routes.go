@@ -42,6 +42,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	// --- persistence ---
 	userRepo := userpersistence.NewUserRepository(gormDB)
+	refreshTokenRepo := userpersistence.NewRefreshTokenRepository(gormDB)
 	childRepo := kidclock.NewChildRepository(gormDB)
 	profileRepo := kidclock.NewProfileRepository(gormDB)
 	activityRepo := kidclock.NewActivityRepository(gormDB)
@@ -53,7 +54,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	bus := eventbus.New()
 	bus.RegisterDefaultHandlers()
 	emailClient := emailinfra.NewBrevoClient(cfg.BrevoAPIKey, cfg.BrevoSenderEmail, cfg.BrevoSenderName)
-	userSvc := userapplication.NewService(userRepo, bus, emailClient, cfg.AppBaseURL)
+	userSvc := userapplication.NewService(userRepo, refreshTokenRepo, bus, emailClient, cfg.AppBaseURL, []byte(cfg.JWTSecret))
 
 	childSvc := app.NewChildService(childRepo, profileRepo)
 	profileSvc := app.NewProfileService(profileRepo, activityRepo, presetRepo, childRepo)
@@ -81,20 +82,25 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r.POST("/logout", authH.Logout)
 
 	r.GET("/clock/:token", clockH.Show)
-	r.GET("/api/clock/:token", clockH.State)
 
-	// --- protected routes ---
+	// public API
+	r.GET("/api/clock/:token", clockH.State)
+	apiAuth := r.Group("/api/auth")
+	apiAuth.POST("/register", authH.APIRegister)
+	apiAuth.POST("/login", authH.APILogin)
+	apiAuth.POST("/refresh", authH.APIRefresh)
+	apiAuth.POST("/logout", authH.APILogout)
+
+	// --- protected page routes (session) ---
 	protected := r.Group("/")
 	protected.Use(middleware.RequireAuth())
 
 	protected.GET("/", func(c *gin.Context) { c.Redirect(http.StatusSeeOther, "/dashboard") })
 
-	// pages
 	protected.GET("/dashboard", dashH.ShowDashboard)
 	protected.GET("/children/:id", childCfgH.Show)
 	protected.GET("/profiles/:id", profileCfgH.Show)
 
-	// form actions
 	form := protected.Group("/config")
 	form.POST("/children", dashH.CreateChild)
 	form.POST("/children/:id/delete", childCfgH.DeleteChild)
@@ -105,8 +111,12 @@ func (s *Server) RegisterRoutes() http.Handler {
 	form.POST("/profiles/:id/activities", profileCfgH.AddActivity)
 	form.POST("/activities/:id/delete", profileCfgH.DeleteActivity)
 
+	// --- protected API routes (JWT Bearer) ---
+	jwtSecret := []byte(cfg.JWTSecret)
+	api := r.Group("/api")
+	api.Use(middleware.RequireJWT(jwtSecret))
+
 	// children
-	api := protected.Group("/api")
 	api.GET("/children", childH.List)
 	api.POST("/children", childH.Create)
 	api.GET("/children/:id", childH.Get)

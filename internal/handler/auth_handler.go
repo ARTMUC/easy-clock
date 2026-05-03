@@ -99,3 +99,76 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 	_ = session.Save()
 	c.Redirect(http.StatusSeeOther, "/login")
 }
+
+// -----------------------------------------------------------------
+// JSON API auth endpoints (JWT flow)
+// -----------------------------------------------------------------
+
+func (h *AuthHandler) APIRegister(c *gin.Context) {
+	var req userapplication.RegisterRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		bindErr(c, err)
+		return
+	}
+	dto, err := h.svc.Register(c.Request.Context(), req)
+	if err != nil {
+		slog.Error("api register", "error", err)
+		if errors.Is(err, domainuser.ErrEmailTaken) {
+			c.JSON(http.StatusConflict, gin.H{"error": "email already registered"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "registration failed"})
+		return
+	}
+	c.JSON(http.StatusCreated, dto)
+}
+
+func (h *AuthHandler) APILogin(c *gin.Context) {
+	var req userapplication.LoginRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		bindErr(c, err)
+		return
+	}
+	pair, err := h.svc.LoginWithTokens(c.Request.Context(), req)
+	if err != nil {
+		slog.Error("api login", "error", err)
+		if errors.Is(err, domainuser.ErrInvalidCredentials) || errors.Is(err, domainuser.ErrNotActive) {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "login failed"})
+		return
+	}
+	c.JSON(http.StatusOK, pair)
+}
+
+func (h *AuthHandler) APIRefresh(c *gin.Context) {
+	var body struct {
+		RefreshToken string `json:"refresh_token" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&body); err != nil {
+		bindErr(c, err)
+		return
+	}
+	pair, err := h.svc.Refresh(c.Request.Context(), body.RefreshToken)
+	if err != nil {
+		slog.Error("api refresh", "error", err)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid or expired refresh token"})
+		return
+	}
+	c.JSON(http.StatusOK, pair)
+}
+
+func (h *AuthHandler) APILogout(c *gin.Context) {
+	var body struct {
+		RefreshToken string `json:"refresh_token" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&body); err != nil {
+		bindErr(c, err)
+		return
+	}
+	if err := h.svc.RevokeToken(c.Request.Context(), body.RefreshToken); err != nil {
+		slog.Error("api logout", "error", err)
+	}
+	c.Status(http.StatusNoContent)
+}

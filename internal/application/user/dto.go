@@ -4,15 +4,15 @@ import domainuser "easy-clock/internal/domain/user"
 
 // RegisterRequest carries data needed to register a user with email/password.
 type RegisterRequest struct {
-	Name     string `form:"name"     binding:"required"`
-	Email    string `form:"email"    binding:"required"`
-	Password string `form:"password" binding:"required,min=8"`
+	Name     string `form:"name"     json:"name"     binding:"required"`
+	Email    string `form:"email"    json:"email"    binding:"required"`
+	Password string `form:"password" json:"password" binding:"required,min=8"`
 }
 
 // LoginRequest carries credentials for authentication.
 type LoginRequest struct {
-	Email    string `form:"email"    binding:"required"`
-	Password string `form:"password" binding:"required"`
+	Email    string `form:"email"    json:"email"    binding:"required"`
+	Password string `form:"password" json:"password" binding:"required"`
 }
 
 // UserDTO is the read representation of a User entity.
@@ -28,4 +28,11 @@ func ToUserDTO(u *domainuser.User) UserDTO {
 		Name:  u.Name(),
 		Email: u.Email(),
 	}
+}
+
+// TokenPairDTO is returned by login and refresh endpoints.
+type TokenPairDTO struct {
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
+	ExpiresIn    int64  `json:"expires_in"` // seconds
 }
