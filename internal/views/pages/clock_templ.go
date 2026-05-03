@@ -7,9 +7,14 @@ import (
 	"io"
 
 	"github.com/a-h/templ"
+
+	"easy-clock/internal/i18n"
 )
 
-type clockPage struct{ token string }
+type clockPage struct {
+	token   string
+	noSched string
+}
 
 func (p clockPage) Render(_ context.Context, w io.Writer) error {
 	t := html.EscapeString(p.token)
@@ -38,7 +43,7 @@ func (p clockPage) Render(_ context.Context, w io.Writer) error {
   <div id="activity"></div>
   <img id="activity-img" src="" alt="">
   <div id="all"></div>
-  <div id="empty" style="display:none">No schedule for now.</div>
+  <div id="empty" style="display:none">%s</div>
   <script>
     const TOKEN = %q;
     async function refresh() {
@@ -76,18 +81,17 @@ func (p clockPage) Render(_ context.Context, w io.Writer) error {
     }
     function tick() {
       const now = new Date();
-      const h = String(now.getHours()).padStart(2,'0');
-      const m = String(now.getMinutes()).padStart(2,'0');
-      document.getElementById('time').textContent = h + ':' + m;
+      document.getElementById('time').textContent =
+        String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
     }
     tick(); setInterval(tick, 10000);
     refresh(); setInterval(refresh, 30000);
   </script>
 </body>
-</html>`, t)
+</html>`, html.EscapeString(p.noSched), t)
 	return err
 }
 
-func ClockPage(token string) templ.Component {
-	return clockPage{token: token}
+func ClockPage(token string, lang i18n.Lang) templ.Component {
+	return clockPage{token: token, noSched: i18n.Msg(i18n.MsgNoSchedule, lang)}
 }

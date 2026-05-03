@@ -10,6 +10,7 @@ import (
 
 	userapplication "easy-clock/internal/application/user"
 	domainuser "easy-clock/internal/domain/user"
+	"easy-clock/internal/i18n"
 	"easy-clock/internal/middleware"
 	"easy-clock/internal/views/pages"
 )
@@ -23,72 +24,73 @@ func NewAuthHandler(svc *userapplication.Service) *AuthHandler {
 }
 
 func (h *AuthHandler) ShowLogin(c *gin.Context) {
-	renderTempl(c, pages.LoginPage(""))
+	renderTempl(c, pages.LoginPage("", lang(c)))
 }
 
 func (h *AuthHandler) HandleLogin(c *gin.Context) {
+	l := lang(c)
 	var req userapplication.LoginRequest
 	if err := c.ShouldBind(&req); err != nil {
-		renderTempl(c, pages.LoginPage("Please fill in all fields."))
+		renderTempl(c, pages.LoginPage(i18n.Msg(i18n.MsgFillAllFields, l), l))
 		return
 	}
-
 	dto, err := h.svc.Login(c.Request.Context(), req)
 	if err != nil {
+		var msg string
 		switch {
 		case errors.Is(err, domainuser.ErrNotActive):
-			renderTempl(c, pages.LoginPage("Please confirm your email address before logging in."))
+			msg = i18n.Msg(i18n.MsgNotActive, l)
 		case errors.Is(err, domainuser.ErrInvalidCredentials):
-			renderTempl(c, pages.LoginPage("Invalid email or password."))
+			msg = i18n.Msg(i18n.MsgInvalidCredentials, l)
 		default:
 			slog.Error("login failed", "error", err)
-			renderTempl(c, pages.LoginPage("Server error. Please try again."))
+			msg = i18n.Msg(i18n.MsgServerError, l)
 		}
+		renderTempl(c, pages.LoginPage(msg, l))
 		return
 	}
-
 	session := sessions.Default(c)
 	session.Set(middleware.SessionUserKey, dto.ID)
 	_ = session.Save()
-
 	c.Redirect(http.StatusSeeOther, "/dashboard")
 }
 
 func (h *AuthHandler) ShowRegister(c *gin.Context) {
-	renderTempl(c, pages.RegisterPage(""))
+	renderTempl(c, pages.RegisterPage("", lang(c)))
 }
 
 func (h *AuthHandler) HandleRegister(c *gin.Context) {
+	l := lang(c)
 	var req userapplication.RegisterRequest
 	if err := c.ShouldBind(&req); err != nil {
-		renderTempl(c, pages.RegisterPage("Please fill in all fields (password min. 8 characters)."))
+		renderTempl(c, pages.RegisterPage(i18n.Msg(i18n.MsgFillAllFields, l), l))
 		return
 	}
-
 	dto, err := h.svc.Register(c.Request.Context(), req)
 	if err != nil {
+		var msg string
 		switch {
 		case errors.Is(err, domainuser.ErrEmailTaken):
-			renderTempl(c, pages.RegisterPage("This email is already taken."))
+			msg = i18n.Msg(i18n.MsgEmailTaken, l)
 		default:
 			slog.Error("register failed", "error", err)
-			renderTempl(c, pages.RegisterPage("Failed to send verification email. Check your address or try again."))
+			msg = i18n.Msg(i18n.MsgVerificationEmailFailed, l)
 		}
+		renderTempl(c, pages.RegisterPage(msg, l))
 		return
 	}
-
-	renderTempl(c, pages.CheckEmailPage(dto.Email))
+	renderTempl(c, pages.CheckEmailPage(dto.Email, l))
 }
 
 func (h *AuthHandler) HandleVerify(c *gin.Context) {
+	l := lang(c)
 	token := c.Query("token")
-	err := h.svc.VerifyEmail(c.Request.Context(), token)
-	if err != nil {
+	if err := h.svc.VerifyEmail(c.Request.Context(), token); err != nil {
 		slog.Error("verify email failed", "error", err)
-		renderTempl(c, pages.VerifyPage(false, "The verification link is invalid or has expired."))
+		renderTempl(c, pages.VerifyPage(false, i18n.Msg(i18n.MsgInvalidToken, l), l))
 		return
 	}
-	renderTempl(c, pages.VerifyPage(true, "Your account has been activated. You can now log in."))
+	renderTempl(c, pages.VerifyPage(true, i18n.Msg(i18n.MsgAccountActivated, l), l))
 }
 
 func (h *AuthHandler) Logout(c *gin.Context) {

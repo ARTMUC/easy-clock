@@ -20,7 +20,7 @@ func NewClockHandler(svc *app.ClockService) *ClockHandler {
 
 // Show serves the clock HTML page. The JS on the page polls /api/clock/:token.
 func (h *ClockHandler) Show(c *gin.Context) {
-	renderTempl(c, pages.ClockPage(c.Param("token")))
+	renderTempl(c, pages.ClockPage(c.Param("token"), lang(c)))
 }
 
 // State returns the current ClockState as JSON.

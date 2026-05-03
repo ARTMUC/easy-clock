@@ -38,6 +38,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 		SameSite: http.SameSiteLaxMode,
 	})
 	r.Use(sessions.Sessions("app_session", store))
+	r.Use(middleware.DetectLanguage())
 
 	// --- persistence ---
 	userRepo := userpersistence.NewUserRepository(gormDB)
@@ -67,6 +68,9 @@ func (s *Server) RegisterRoutes() http.Handler {
 	profileH := handler.NewProfileHandler(profileSvc)
 	scheduleH := handler.NewScheduleHandler(scheduleSvc)
 	eventH := handler.NewEventHandler(eventSvc)
+	dashH := handler.NewDashboardHandler(childSvc)
+	childCfgH := handler.NewChildConfigHandler(childSvc, profileSvc, scheduleSvc)
+	profileCfgH := handler.NewProfileConfigHandler(profileSvc)
 
 	// --- public routes ---
 	r.GET("/login", authH.ShowLogin)
@@ -85,8 +89,21 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	protected.GET("/", func(c *gin.Context) { c.Redirect(http.StatusSeeOther, "/dashboard") })
 
-	dashH := handler.NewDashboardHandler()
+	// pages
 	protected.GET("/dashboard", dashH.ShowDashboard)
+	protected.GET("/children/:id", childCfgH.Show)
+	protected.GET("/profiles/:id", profileCfgH.Show)
+
+	// form actions
+	form := protected.Group("/config")
+	form.POST("/children", dashH.CreateChild)
+	form.POST("/children/:id/delete", childCfgH.DeleteChild)
+	form.POST("/children/:id/profiles", childCfgH.CreateProfile)
+	form.POST("/children/:id/default-profile", childCfgH.SetDefaultProfile)
+	form.POST("/children/:id/schedule/:day", childCfgH.AssignScheduleDay)
+	form.POST("/profiles/:id/delete", profileCfgH.Delete)
+	form.POST("/profiles/:id/activities", profileCfgH.AddActivity)
+	form.POST("/activities/:id/delete", profileCfgH.DeleteActivity)
 
 	// children
 	api := protected.Group("/api")

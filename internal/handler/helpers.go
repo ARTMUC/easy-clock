@@ -2,13 +2,12 @@ package handler
 
 import (
 	"context"
-	"errors"
 	"io"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 
-	"easy-clock/internal/domain"
+	"easy-clock/internal/i18n"
 	"easy-clock/internal/middleware"
 )
 
@@ -36,19 +35,16 @@ func sessionUserID(c *gin.Context) string {
 	return ""
 }
 
-func apiErr(c *gin.Context, err error) {
-	switch {
-	case errors.Is(err, domain.ErrNotFound):
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-	case errors.Is(err, domain.ErrInvalidHourRange),
-		errors.Is(err, domain.ErrActivityOverlap),
-		errors.Is(err, domain.ErrImageRequired),
-		errors.Is(err, domain.ErrInvalidTimeRange),
-		errors.Is(err, domain.ErrEventProfileXorActivities),
-		errors.Is(err, domain.ErrEmptyName),
-		errors.Is(err, domain.ErrInvalidTimezone):
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	default:
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
+func lang(c *gin.Context) i18n.Lang {
+	if v, ok := c.Get(middleware.LangKey); ok {
+		if l, ok := v.(i18n.Lang); ok {
+			return l
+		}
 	}
+	return i18n.EN
+}
+
+func apiErr(c *gin.Context, err error) {
+	msg, status := i18n.DomainError(err, lang(c))
+	c.JSON(status, gin.H{"error": msg})
 }
