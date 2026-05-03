@@ -5,21 +5,6 @@ import (
 	"time"
 )
 
-type UserRepository interface {
-	FindByID(ctx context.Context, id string) (*User, error)
-	FindByEmail(ctx context.Context, email string) (*User, error)
-	Save(ctx context.Context, u *User) error
-	// Update saves only mutable fields; returns ErrOptimisticLock on version mismatch.
-	Update(ctx context.Context, u *User) error
-}
-
-type RefreshTokenRepository interface {
-	Save(ctx context.Context, t *RefreshToken) error
-	FindByHash(ctx context.Context, hash string) (*RefreshToken, error)
-	DeleteByHash(ctx context.Context, hash string) error
-	DeleteExpired(ctx context.Context) error
-}
-
 type ChildRepository interface {
 	FindByID(ctx context.Context, id string) (*Child, error)
 	FindByUserID(ctx context.Context, userID string) ([]Child, error)

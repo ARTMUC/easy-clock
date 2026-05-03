@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"starter/internal/config"
-	database "starter/internal/db"
+	"easy-clock/internal/config"
+	database "easy-clock/internal/db"
 
 	"gorm.io/gorm"
 )

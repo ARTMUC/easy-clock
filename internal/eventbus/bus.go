@@ -3,7 +3,7 @@ package eventbus
 import (
 	"log"
 
-	domainuser "starter/internal/domain/user"
+	domainuser "easy-clock/internal/domain/user"
 
 	evbus "github.com/asaskevich/eventbus"
 )

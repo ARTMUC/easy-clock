@@ -7,7 +7,7 @@ import (
 
 	"gorm.io/gorm"
 
-	"starter/internal/domain"
+	"easy-clock/internal/domain"
 )
 
 type presetActivityModel struct {

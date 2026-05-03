@@ -26,7 +26,7 @@ import (
 
 	"github.com/joho/godotenv"
 
-	dbmigrate "starter/internal/db/migrate"
+	dbmigrate "easy-clock/internal/db/migrate"
 )
 
 func main() {

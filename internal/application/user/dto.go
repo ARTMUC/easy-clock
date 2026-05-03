@@ -1,6 +1,6 @@
 package userapplication
 
-import domainuser "starter/internal/domain/user"
+import domainuser "easy-clock/internal/domain/user"
 
 // RegisterRequest carries data needed to register a user with email/password.
 type RegisterRequest struct {

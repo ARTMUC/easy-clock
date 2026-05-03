@@ -9,8 +9,8 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
-	domainuser "starter/internal/domain/user"
-	"starter/internal/eventbus"
+	domainuser "easy-clock/internal/domain/user"
+	"easy-clock/internal/eventbus"
 )
 
 // Service is the application service for the User bounded context.

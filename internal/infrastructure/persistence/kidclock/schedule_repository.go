@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 
-	"starter/internal/domain"
+	"easy-clock/internal/domain"
 )
 
 type scheduleDayModel struct {

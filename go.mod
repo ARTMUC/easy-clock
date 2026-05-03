@@ -1,4 +1,4 @@
-module starter
+module easy-clock
 
 go 1.24.0
 

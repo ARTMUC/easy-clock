@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"starter/internal/middleware"
+	"easy-clock/internal/middleware"
 )
 
 type templComponent interface {

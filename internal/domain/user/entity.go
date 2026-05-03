@@ -41,8 +41,12 @@ func NewUserWithAuth(name, email, passwordHash, verificationToken string) (*User
 	if email == "" {
 		return nil, ErrEmptyEmail
 	}
+	id, err := uuid.NewV7()
+	if err != nil {
+		return nil, err
+	}
 	u := &User{
-		id:                uuid.New().String(),
+		id:                id.String(),
 		name:              name,
 		email:             email,
 		passwordHash:      passwordHash,
@@ -64,9 +68,6 @@ func Reconstitute(id string, name, email, passwordHash string, active bool, veri
 		verificationToken: verificationToken,
 	}
 }
-
-// SetID is called by the repository after the DB assigns an ID.
-func (u *User) SetID(id string) { u.id = id }
 
 // -----------------------------------------------------------------
 // Queries

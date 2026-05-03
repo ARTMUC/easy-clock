@@ -1,6 +1,6 @@
 package userpersistence
 
-import domainuser "starter/internal/domain/user"
+import domainuser "easy-clock/internal/domain/user"
 
 // Translator maps between the User domain entity and the GORM persistence models.
 type Translator struct{}

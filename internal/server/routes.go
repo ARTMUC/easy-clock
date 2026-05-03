@@ -7,12 +7,12 @@ import (
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 
-	userapplication "starter/internal/application/user"
-	"starter/internal/eventbus"
-	"starter/internal/handler"
-	"starter/internal/middleware"
-	emailinfra "starter/internal/infrastructure/email"
-	userpersistence "starter/internal/infrastructure/persistence/user"
+	userapplication "easy-clock/internal/application/user"
+	"easy-clock/internal/eventbus"
+	"easy-clock/internal/handler"
+	"easy-clock/internal/middleware"
+	emailinfra "easy-clock/internal/infrastructure/email"
+	userpersistence "easy-clock/internal/infrastructure/persistence/user"
 )
 
 func (s *Server) RegisterRoutes() http.Handler {

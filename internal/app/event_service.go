@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"starter/internal/domain"
+	"easy-clock/internal/domain"
 )
 
 type EventService struct {

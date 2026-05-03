@@ -11,7 +11,7 @@ import (
 
 	"github.com/joho/godotenv"
 
-	"starter/internal/server"
+	"easy-clock/internal/server"
 )
 
 func gracefulShutdown(apiServer *http.Server, done chan bool) {

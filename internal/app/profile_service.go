@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"starter/internal/domain"
+	"easy-clock/internal/domain"
 )
 
 type ProfileService struct {

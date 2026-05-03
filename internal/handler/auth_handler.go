@@ -8,10 +8,10 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 
-	userapplication "starter/internal/application/user"
-	domainuser "starter/internal/domain/user"
-	"starter/internal/middleware"
-	"starter/internal/views/pages"
+	userapplication "easy-clock/internal/application/user"
+	domainuser "easy-clock/internal/domain/user"
+	"easy-clock/internal/middleware"
+	"easy-clock/internal/views/pages"
 )
 
 type AuthHandler struct {

@@ -3,7 +3,7 @@ package handler
 import (
 	"github.com/gin-gonic/gin"
 
-	"starter/internal/views/pages"
+	"easy-clock/internal/views/pages"
 )
 
 type DashboardHandler struct{}
