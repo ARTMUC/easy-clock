@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log/slog"
 	"net/http"
 	"strconv"
 
@@ -32,7 +33,7 @@ func (h *ScheduleHandler) Assign(c *gin.Context) {
 		Days      []int  `json:"days"       binding:"required"`
 	}
 	if err := c.ShouldBindJSON(&body); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		bindErr(c, err)
 		return
 	}
 	if err := h.svc.AssignProfileToDays(c.Request.Context(), c.Param("childID"), sessionUserID(c), body.ProfileID, body.Days); err != nil {
@@ -45,6 +46,7 @@ func (h *ScheduleHandler) Assign(c *gin.Context) {
 func (h *ScheduleHandler) ClearDay(c *gin.Context) {
 	day, err := strconv.Atoi(c.Param("day"))
 	if err != nil {
+		slog.Warn("bad request", "method", c.Request.Method, "path", c.Request.URL.Path, "error", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "day must be an integer 0–6"})
 		return
 	}

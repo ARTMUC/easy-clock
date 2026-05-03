@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log/slog"
 	"net/http"
 	"time"
 
@@ -20,11 +21,13 @@ func NewEventHandler(svc *app.EventService) *EventHandler {
 func (h *EventHandler) List(c *gin.Context) {
 	from, err := time.Parse("2006-01-02", c.Query("from"))
 	if err != nil {
+		slog.Warn("bad request", "method", c.Request.Method, "path", c.Request.URL.Path, "error", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "from must be YYYY-MM-DD"})
 		return
 	}
 	to, err := time.Parse("2006-01-02", c.Query("to"))
 	if err != nil {
+		slog.Warn("bad request", "method", c.Request.Method, "path", c.Request.URL.Path, "error", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "to must be YYYY-MM-DD"})
 		return
 	}
@@ -90,11 +93,12 @@ func bindEventInput(c *gin.Context) (app.CreateEventInput, bool) {
 		Activities []eventActivityBody `json:"activities"`
 	}
 	if err := c.ShouldBindJSON(&body); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		bindErr(c, err)
 		return app.CreateEventInput{}, false
 	}
 	date, err := time.Parse("2006-01-02", body.Date)
 	if err != nil {
+		slog.Warn("bad request", "method", c.Request.Method, "path", c.Request.URL.Path, "error", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "date must be YYYY-MM-DD"})
 		return app.CreateEventInput{}, false
 	}

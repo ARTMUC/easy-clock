@@ -31,7 +31,7 @@ func (h *ChildHandler) Create(c *gin.Context) {
 		Timezone string `json:"timezone" binding:"required"`
 	}
 	if err := c.ShouldBindJSON(&body); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		bindErr(c, err)
 		return
 	}
 	child, err := h.svc.AddChild(c.Request.Context(), sessionUserID(c), body.Name, body.Timezone)
@@ -58,7 +58,7 @@ func (h *ChildHandler) Update(c *gin.Context) {
 		AvatarPath string `json:"avatar_path"`
 	}
 	if err := c.ShouldBindJSON(&body); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		bindErr(c, err)
 		return
 	}
 	child, err := h.svc.UpdateChild(c.Request.Context(), c.Param("id"), sessionUserID(c), body.Name, body.Timezone, body.AvatarPath)
@@ -82,7 +82,7 @@ func (h *ChildHandler) SetDefaultProfile(c *gin.Context) {
 		ProfileID string `json:"profile_id" binding:"required"`
 	}
 	if err := c.ShouldBindJSON(&body); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		bindErr(c, err)
 		return
 	}
 	if err := h.svc.SetDefaultProfile(c.Request.Context(), c.Param("id"), sessionUserID(c), body.ProfileID); err != nil {

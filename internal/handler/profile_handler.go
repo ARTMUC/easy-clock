@@ -31,7 +31,7 @@ func (h *ProfileHandler) Create(c *gin.Context) {
 		Color string `json:"color"`
 	}
 	if err := c.ShouldBindJSON(&body); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		bindErr(c, err)
 		return
 	}
 	profile, err := h.svc.CreateProfile(c.Request.Context(), c.Param("childID"), sessionUserID(c), body.Name, body.Color)
@@ -57,7 +57,7 @@ func (h *ProfileHandler) Update(c *gin.Context) {
 		Color string `json:"color" binding:"required"`
 	}
 	if err := c.ShouldBindJSON(&body); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		bindErr(c, err)
 		return
 	}
 	profile, err := h.svc.UpdateProfile(c.Request.Context(), c.Param("id"), sessionUserID(c), body.Name, body.Color)
@@ -88,7 +88,7 @@ func (h *ProfileHandler) AddActivity(c *gin.Context) {
 		SortOrder int    `json:"sort_order"`
 	}
 	if err := c.ShouldBindJSON(&body); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		bindErr(c, err)
 		return
 	}
 	in := app.AddActivityInput{
@@ -120,7 +120,7 @@ func (h *ProfileHandler) UpdateActivity(c *gin.Context) {
 		SortOrder int    `json:"sort_order"`
 	}
 	if err := c.ShouldBindJSON(&body); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		bindErr(c, err)
 		return
 	}
 	in := app.AddActivityInput{
