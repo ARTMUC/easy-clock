@@ -188,6 +188,10 @@ func (s *ProfileService) RemoveActivity(ctx context.Context, activityID, userID 
 	return nil
 }
 
+func (s *ProfileService) ListPresets(ctx context.Context) ([]domain.PresetActivity, error) {
+	return s.presetRepo.FindAll(ctx)
+}
+
 func (s *ProfileService) assertChildOwner(ctx context.Context, childID, userID string) error {
 	c, err := s.childRepo.FindByID(ctx, childID)
 	if err != nil {

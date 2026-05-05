@@ -17,5 +17,30 @@ services:
       timeout: 5s
       retries: 10
 
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8080}:8080"
+    environment:
+      PORT: "8080"
+      GONE_DB_HOST: mysql
+      GONE_DB_PORT: "3306"
+      GONE_DB_DATABASE: ${GONE_DB_DATABASE}
+      GONE_DB_USERNAME: ${GONE_DB_USERNAME}
+      GONE_DB_PASSWORD: ${GONE_DB_PASSWORD}
+      SESSION_SECRET: ${SESSION_SECRET:?SESSION_SECRET is required}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+      APP_BASE_URL: ${APP_BASE_URL:-http://localhost:8080}
+      BREVO_API_KEY: ${BREVO_API_KEY:-}
+      BREVO_SENDER_EMAIL: ${BREVO_SENDER_EMAIL:-noreply@example.com}
+      BREVO_SENDER_NAME: ${BREVO_SENDER_NAME:-KidClock}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - uploads_volume:/app/static/uploads
+
 volumes:
   mysql_volume:
+  uploads_volume:

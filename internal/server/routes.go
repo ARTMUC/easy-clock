@@ -2,6 +2,7 @@ package router
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -72,6 +73,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	dashH := handler.NewDashboardHandler(childSvc)
 	childCfgH := handler.NewChildConfigHandler(childSvc, profileSvc, scheduleSvc)
 	profileCfgH := handler.NewProfileConfigHandler(profileSvc)
+	presetH := handler.NewPresetHandler(profileSvc)
 
 	// --- public routes ---
 	r.GET("/login", authH.ShowLogin)
@@ -85,6 +87,10 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	// public API
 	r.GET("/api/clock/:token", clockH.State)
+	r.GET("/api/time", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"millis": time.Now().UnixMilli()})
+	})
+	r.GET("/api/preset-activities", presetH.List)
 	apiAuth := r.Group("/api/auth")
 	apiAuth.POST("/register", authH.APIRegister)
 	apiAuth.POST("/login", authH.APILogin)
@@ -110,6 +116,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	form.POST("/profiles/:id/delete", profileCfgH.Delete)
 	form.POST("/profiles/:id/activities", profileCfgH.AddActivity)
 	form.POST("/activities/:id/delete", profileCfgH.DeleteActivity)
+	form.POST("/upload", handler.UploadHandler)
 
 	// --- protected API routes (JWT Bearer) ---
 	jwtSecret := []byte(cfg.JWTSecret)
