@@ -91,6 +91,21 @@ func (s *ChildService) ListChildren(ctx context.Context, userID string) ([]domai
 	return children, nil
 }
 
+func (s *ChildService) SetAvatarPath(ctx context.Context, childID, userID, avatarPath string) error {
+	c, err := s.childRepo.FindByID(ctx, childID)
+	if err != nil {
+		return fmt.Errorf("ChildService.SetAvatarPath: find: %w", err)
+	}
+	if c.UserID != userID {
+		return fmt.Errorf("ChildService.SetAvatarPath: %w", domain.ErrNotFound)
+	}
+	c.AvatarPath = avatarPath
+	if err := s.childRepo.Update(ctx, c); err != nil {
+		return fmt.Errorf("ChildService.SetAvatarPath: update: %w", err)
+	}
+	return nil
+}
+
 func (s *ChildService) GetChild(ctx context.Context, childID, userID string) (*domain.Child, error) {
 	c, err := s.childRepo.FindByID(ctx, childID)
 	if err != nil {

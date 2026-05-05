@@ -86,6 +86,18 @@ const (
 	MsgCustom           = "custom"
 	MsgUploadImage      = "upload_image"
 
+	// events
+	MsgEvents              = "events"
+	MsgNoEvents            = "no_events"
+	MsgAddEvent            = "add_event"
+	MsgLabelDate           = "label_date"
+	MsgLabelFromTime       = "label_from_time"
+	MsgLabelToTime         = "label_to_time"
+	MsgLabelOptionalProfile = "label_optional_profile"
+
+	// avatar
+	MsgUploadAvatar = "upload_avatar"
+
 	// clock page
 	MsgNoSchedule       = "no_schedule"
 )
@@ -192,6 +204,15 @@ var messages = map[string]map[Lang]string{
 	MsgPreset:         {PL: "Gotowe", EN: "Preset"},
 	MsgCustom:         {PL: "Własne", EN: "Custom"},
 	MsgUploadImage:    {PL: "Wgraj obraz", EN: "Upload image"},
+
+	MsgEvents:               {PL: "Wydarzenia jednorazowe", EN: "One-off events"},
+	MsgNoEvents:             {PL: "Brak wydarzeń.", EN: "No events."},
+	MsgAddEvent:             {PL: "Dodaj wydarzenie", EN: "Add event"},
+	MsgLabelDate:            {PL: "Data", EN: "Date"},
+	MsgLabelFromTime:        {PL: "Od (czas)", EN: "From (time)"},
+	MsgLabelToTime:          {PL: "Do (czas)", EN: "To (time)"},
+	MsgLabelOptionalProfile: {PL: "Profil (opcjonalnie)", EN: "Profile (optional)"},
+	MsgUploadAvatar:         {PL: "Wgraj zdjęcie", EN: "Upload photo"},
 
 	MsgNoSchedule: {PL: "Brak harmonogramu.", EN: "No schedule for now."},
 }

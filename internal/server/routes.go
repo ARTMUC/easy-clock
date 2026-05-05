@@ -71,7 +71,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	scheduleH := handler.NewScheduleHandler(scheduleSvc)
 	eventH := handler.NewEventHandler(eventSvc)
 	dashH := handler.NewDashboardHandler(childSvc)
-	childCfgH := handler.NewChildConfigHandler(childSvc, profileSvc, scheduleSvc)
+	childCfgH := handler.NewChildConfigHandler(childSvc, profileSvc, scheduleSvc, eventSvc)
 	profileCfgH := handler.NewProfileConfigHandler(profileSvc)
 	presetH := handler.NewPresetHandler(profileSvc)
 
@@ -116,6 +116,9 @@ func (s *Server) RegisterRoutes() http.Handler {
 	form.POST("/profiles/:id/delete", profileCfgH.Delete)
 	form.POST("/profiles/:id/activities", profileCfgH.AddActivity)
 	form.POST("/activities/:id/delete", profileCfgH.DeleteActivity)
+	form.POST("/children/:id/events", childCfgH.CreateEvent)
+	form.POST("/events/:id/delete", childCfgH.DeleteEvent)
+	form.POST("/children/:id/avatar", childCfgH.UploadAvatar)
 	form.POST("/upload", handler.UploadHandler)
 
 	// --- protected API routes (JWT Bearer) ---
