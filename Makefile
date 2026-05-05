@@ -1,5 +1,5 @@
 # Project variables
-APP_NAME    := starter
+APP_NAME    := easy-clock
 MIGRATE_CMD := ./cmd/migrate/main.go
 BIN_DIR     := bin
 MAIN_FILE   := ./cmd/main.go
@@ -20,7 +20,7 @@ templ-gen:
 	@templ generate ./internal/views/...
 
 ## Run the application
-run: templ-gen
+run:
 	@echo ">> Running $(APP_NAME)..."
 	@$(GO) run $(MAIN_FILE)
 

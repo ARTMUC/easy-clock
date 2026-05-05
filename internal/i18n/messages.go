@@ -82,6 +82,9 @@ const (
 	MsgLabelToHour      = "label_to_hour"
 	MsgLabelRing        = "label_ring"
 	MsgLabelSortOrder   = "label_sort_order"
+	MsgPreset           = "preset"
+	MsgCustom           = "custom"
+	MsgUploadImage      = "upload_image"
 
 	// clock page
 	MsgNoSchedule       = "no_schedule"
@@ -186,6 +189,9 @@ var messages = map[string]map[Lang]string{
 	MsgLabelToHour:    {PL: "Godzina do (1–24)", EN: "To hour (1–24)"},
 	MsgLabelRing:      {PL: "Pierścień", EN: "Ring"},
 	MsgLabelSortOrder: {PL: "Kolejność", EN: "Sort order"},
+	MsgPreset:         {PL: "Gotowe", EN: "Preset"},
+	MsgCustom:         {PL: "Własne", EN: "Custom"},
+	MsgUploadImage:    {PL: "Wgraj obraz", EN: "Upload image"},
 
 	MsgNoSchedule: {PL: "Brak harmonogramu.", EN: "No schedule for now."},
 }
