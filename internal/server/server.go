@@ -44,7 +44,7 @@ func NewServer() *http.Server {
 	}
 
 	httpServer := &http.Server{
-		Addr:         fmt.Sprintf("127.0.0.1:%d", srv.port),
+		Addr:         fmt.Sprintf(":%d", srv.port),
 		Handler:      srv.RegisterRoutes(),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,

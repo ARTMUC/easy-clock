@@ -19,7 +19,7 @@ func NewScheduleHandler(svc *app.ScheduleService) *ScheduleHandler {
 }
 
 func (h *ScheduleHandler) Get(c *gin.Context) {
-	assignments, err := h.svc.GetSchedule(c.Request.Context(), c.Param("childID"), sessionUserID(c))
+	assignments, err := h.svc.GetSchedule(c.Request.Context(), c.Param("id"), sessionUserID(c))
 	if err != nil {
 		apiErr(c, err)
 		return
@@ -36,7 +36,7 @@ func (h *ScheduleHandler) Assign(c *gin.Context) {
 		bindErr(c, err)
 		return
 	}
-	if err := h.svc.AssignProfileToDays(c.Request.Context(), c.Param("childID"), sessionUserID(c), body.ProfileID, body.Days); err != nil {
+	if err := h.svc.AssignProfileToDays(c.Request.Context(), c.Param("id"), sessionUserID(c), body.ProfileID, body.Days); err != nil {
 		apiErr(c, err)
 		return
 	}
@@ -50,7 +50,7 @@ func (h *ScheduleHandler) ClearDay(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "day must be an integer 0–6"})
 		return
 	}
-	if err := h.svc.ClearDay(c.Request.Context(), c.Param("childID"), sessionUserID(c), day); err != nil {
+	if err := h.svc.ClearDay(c.Request.Context(), c.Param("id"), sessionUserID(c), day); err != nil {
 		apiErr(c, err)
 		return
 	}

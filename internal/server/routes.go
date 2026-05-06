@@ -135,8 +135,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 	api.PUT("/children/:id/default-profile", childH.SetDefaultProfile)
 
 	// profiles
-	api.GET("/children/:childID/profiles", profileH.List)
-	api.POST("/children/:childID/profiles", profileH.Create)
+	api.GET("/children/:id/profiles", profileH.List)
+	api.POST("/children/:id/profiles", profileH.Create)
 	api.GET("/profiles/:id", profileH.Get)
 	api.PUT("/profiles/:id", profileH.Update)
 	api.DELETE("/profiles/:id", profileH.Delete)
@@ -147,13 +147,13 @@ func (s *Server) RegisterRoutes() http.Handler {
 	api.DELETE("/activities/:id", profileH.DeleteActivity)
 
 	// schedule
-	api.GET("/children/:childID/schedule", scheduleH.Get)
-	api.POST("/children/:childID/schedule", scheduleH.Assign)
-	api.DELETE("/children/:childID/schedule/:day", scheduleH.ClearDay)
+	api.GET("/children/:id/schedule", scheduleH.Get)
+	api.POST("/children/:id/schedule", scheduleH.Assign)
+	api.DELETE("/children/:id/schedule/:day", scheduleH.ClearDay)
 
 	// events
-	api.GET("/children/:childID/events", eventH.List)
-	api.POST("/children/:childID/events", eventH.Create)
+	api.GET("/children/:id/events", eventH.List)
+	api.POST("/children/:id/events", eventH.Create)
 	api.PUT("/events/:id", eventH.Update)
 	api.DELETE("/events/:id", eventH.Delete)
 

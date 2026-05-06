@@ -17,7 +17,7 @@ func NewProfileHandler(svc *app.ProfileService) *ProfileHandler {
 }
 
 func (h *ProfileHandler) List(c *gin.Context) {
-	profiles, err := h.svc.ListProfiles(c.Request.Context(), c.Param("childID"), sessionUserID(c))
+	profiles, err := h.svc.ListProfiles(c.Request.Context(), c.Param("id"), sessionUserID(c))
 	if err != nil {
 		apiErr(c, err)
 		return
@@ -34,7 +34,7 @@ func (h *ProfileHandler) Create(c *gin.Context) {
 		bindErr(c, err)
 		return
 	}
-	profile, err := h.svc.CreateProfile(c.Request.Context(), c.Param("childID"), sessionUserID(c), body.Name, body.Color)
+	profile, err := h.svc.CreateProfile(c.Request.Context(), c.Param("id"), sessionUserID(c), body.Name, body.Color)
 	if err != nil {
 		apiErr(c, err)
 		return

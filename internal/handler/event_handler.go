@@ -31,7 +31,7 @@ func (h *EventHandler) List(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "to must be YYYY-MM-DD"})
 		return
 	}
-	events, err := h.svc.ListEvents(c.Request.Context(), c.Param("childID"), sessionUserID(c), from, to)
+	events, err := h.svc.ListEvents(c.Request.Context(), c.Param("id"), sessionUserID(c), from, to)
 	if err != nil {
 		apiErr(c, err)
 		return
@@ -44,7 +44,7 @@ func (h *EventHandler) Create(c *gin.Context) {
 	if !ok {
 		return
 	}
-	event, err := h.svc.CreateEvent(c.Request.Context(), c.Param("childID"), sessionUserID(c), in)
+	event, err := h.svc.CreateEvent(c.Request.Context(), c.Param("id"), sessionUserID(c), in)
 	if err != nil {
 		apiErr(c, err)
 		return
