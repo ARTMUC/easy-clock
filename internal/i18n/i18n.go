@@ -50,7 +50,7 @@ func DomainError(err error, lang Lang) (string, int) {
 		{domain.ErrInvalidHourRange, http.StatusBadRequest,
 			"Godzina początkowa musi być mniejsza od końcowej.", "Start hour must be less than end hour."},
 		{domain.ErrActivityOverlap, http.StatusBadRequest,
-			"Aktywności w tym samym pierścieniu nie mogą się nakładać.", "Activities in the same ring must not overlap."},
+			"Aktywności nie mogą się nakładać.", "Activities must not overlap."},
 		{domain.ErrImageRequired, http.StatusBadRequest,
 			"Ścieżka do obrazka jest wymagana.", "Image path is required."},
 		{domain.ErrInvalidTimeRange, http.StatusBadRequest,

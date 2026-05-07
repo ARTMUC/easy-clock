@@ -17,8 +17,6 @@ func ProfileConfigPage(profile *domain.Profile, lang i18n.Lang) templ.Component 
 	return basePage(profile.Name+" — KidClock", func(w io.Writer) error {
 		p := profile
 		pid := html.EscapeString(p.ID)
-		ring1 := filterRing(p.Activities, 1)
-		ring2 := filterRing(p.Activities, 2)
 
 		// ---- header ----
 		fmt.Fprint(w, `<div class="space-y-6">`)
@@ -32,11 +30,10 @@ func ProfileConfigPage(profile *domain.Profile, lang i18n.Lang) templ.Component 
 			html.EscapeString(p.ChildID), html.EscapeString(t(i18n.MsgBackToChild)))
 		fmt.Fprint(w, `</div></div>`)
 
-		// ---- activity rings ----
+		// ---- activities ----
 		fmt.Fprint(w, `<div class="bg-white rounded-xl p-4 shadow-sm">`)
 		fmt.Fprintf(w, `<h2 class="font-semibold text-gray-800 mb-3">%s</h2>`, html.EscapeString(t(i18n.MsgActivities)))
-		writeActivityRing(w, t(i18n.MsgRing1), ring1, p.ID, t(i18n.MsgDeleteConfirm))
-		writeActivityRing(w, t(i18n.MsgRing2), ring2, p.ID, t(i18n.MsgDeleteConfirm))
+		writeActivitiesList(w, sortActivities(p.Activities), p.ID, t(i18n.MsgDeleteConfirm))
 
 		// ---- add activity — tabs ----
 		fmt.Fprint(w, `<div class="border-t border-gray-100 pt-4 mt-4">`)
@@ -64,8 +61,6 @@ func ProfileConfigPage(profile *domain.Profile, lang i18n.Lang) templ.Component 
 			html.EscapeString(t(i18n.MsgLabelFromHour)))
 		fmt.Fprintf(w, `<div class="flex-1"><label>%s</label><input type="number" name="to_hour" min="1" max="24" value="9" required></div>`,
 			html.EscapeString(t(i18n.MsgLabelToHour)))
-		fmt.Fprintf(w, `<div class="flex-1"><label>%s</label><select name="ring" id="pf-ring"><option value="1">1 (AM)</option><option value="2">2 (PM)</option></select></div>`,
-			html.EscapeString(t(i18n.MsgLabelRing)))
 		fmt.Fprint(w, `</div>`)
 		fmt.Fprintf(w, `<button type="submit" id="preset-submit" disabled class="btn btn-primary w-full mt-3">%s</button>`,
 			html.EscapeString(t(i18n.MsgAddActivity)))
@@ -95,8 +90,6 @@ func ProfileConfigPage(profile *domain.Profile, lang i18n.Lang) templ.Component 
 			html.EscapeString(t(i18n.MsgLabelFromHour)))
 		fmt.Fprintf(w, `<div class="flex-1"><label>%s</label><input type="number" name="to_hour" min="1" max="24" value="9" required></div>`,
 			html.EscapeString(t(i18n.MsgLabelToHour)))
-		fmt.Fprintf(w, `<div class="flex-1"><label>%s</label><select name="ring"><option value="1">1 (AM)</option><option value="2">2 (PM)</option></select></div>`,
-			html.EscapeString(t(i18n.MsgLabelRing)))
 		fmt.Fprint(w, `</div>`)
 		fmt.Fprintf(w, `<div><label>%s</label><input type="number" name="sort_order" value="0"></div>`,
 			html.EscapeString(t(i18n.MsgLabelSortOrder)))
@@ -162,7 +155,6 @@ function selectPreset(p, btn) {
   document.getElementById('pf-emoji').value       = p.Emoji     || '';
   document.getElementById('pf-label').value       = p.Label     || '';
   document.getElementById('pf-image-path').value  = p.ImagePath || '';
-  document.getElementById('pf-ring').value        = p.Ring      || 1;
   document.getElementById('preset-selected').textContent = (p.Emoji || '') + ' ' + (p.Label || '');
   document.getElementById('preset-submit').disabled = false;
   document.querySelectorAll('#preset-grid button').forEach(function(b) {
@@ -198,19 +190,14 @@ document.getElementById('file-input').addEventListener('change', function() {
 loadPresets();
 </script>`
 
-func filterRing(activities []domain.Activity, ring int) []domain.Activity {
-	var out []domain.Activity
-	for _, a := range activities {
-		if a.Ring == ring {
-			out = append(out, a)
-		}
-	}
+func sortActivities(activities []domain.Activity) []domain.Activity {
+	out := make([]domain.Activity, len(activities))
+	copy(out, activities)
 	sort.Slice(out, func(i, j int) bool { return out[i].FromHour < out[j].FromHour })
 	return out
 }
 
-func writeActivityRing(w io.Writer, title string, activities []domain.Activity, profileID, deleteConfirm string) {
-	fmt.Fprintf(w, `<h3 class="text-sm font-medium text-gray-600 mb-2 mt-3">%s</h3>`, html.EscapeString(title))
+func writeActivitiesList(w io.Writer, activities []domain.Activity, profileID, deleteConfirm string) {
 	if len(activities) == 0 {
 		return
 	}

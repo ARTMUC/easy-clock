@@ -36,7 +36,6 @@ type eventActivityModel struct {
 	Label     string         `gorm:"column:label"`
 	FromHour  int            `gorm:"column:from_hour"` // LOCAL hour in child's timezone
 	ToHour    int            `gorm:"column:to_hour"`   // LOCAL hour in child's timezone
-	Ring      int            `gorm:"column:ring"`
 	ImagePath *string        `gorm:"column:image_path"`
 	Version   int            `gorm:"column:version"`
 	CreatedAt time.Time      `gorm:"column:created_at"` // UTC
@@ -200,7 +199,6 @@ func eventActivityToDomain(m *eventActivityModel) domain.EventActivity {
 		Label:     m.Label,
 		FromHour:  m.FromHour,
 		ToHour:    m.ToHour,
-		Ring:      m.Ring,
 		Version:   m.Version,
 		CreatedAt: m.CreatedAt,
 		UpdatedAt: m.UpdatedAt,
@@ -219,7 +217,6 @@ func eventActivityFromDomain(a *domain.EventActivity) eventActivityModel {
 		Label:     a.Label,
 		FromHour:  a.FromHour,
 		ToHour:    a.ToHour,
-		Ring:      a.Ring,
 		ImagePath: nilStr(a.ImagePath),
 		Version:   a.Version,
 		CreatedAt: a.CreatedAt,

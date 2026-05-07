@@ -101,7 +101,6 @@ type AddActivityInput struct {
 	ImagePath string
 	FromHour  int
 	ToHour    int
-	Ring      int
 	SortOrder int
 }
 
@@ -120,7 +119,7 @@ func (s *ProfileService) AddActivity(ctx context.Context, profileID, userID stri
 		}
 		in.ImagePath = preset.ImagePath
 	}
-	a, err := domain.NewActivity(profileID, in.PresetID, in.Emoji, in.Label, in.ImagePath, in.FromHour, in.ToHour, in.Ring, in.SortOrder)
+	a, err := domain.NewActivity(profileID, in.PresetID, in.Emoji, in.Label, in.ImagePath, in.FromHour, in.ToHour, in.SortOrder)
 	if err != nil {
 		return nil, fmt.Errorf("ProfileService.AddActivity: %w", err)
 	}
@@ -158,7 +157,6 @@ func (s *ProfileService) UpdateActivity(ctx context.Context, activityID, userID 
 	candidate.ImagePath = in.ImagePath
 	candidate.FromHour = in.FromHour
 	candidate.ToHour = in.ToHour
-	candidate.Ring = in.Ring
 	candidate.SortOrder = in.SortOrder
 	if err := tmp.AddActivity(candidate); err != nil {
 		return nil, fmt.Errorf("ProfileService.UpdateActivity: overlap check: %w", err)

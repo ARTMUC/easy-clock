@@ -18,7 +18,6 @@ type activityModel struct {
 	Label     string         `gorm:"column:label"`
 	FromHour  int            `gorm:"column:from_hour"` // LOCAL hour in child's timezone
 	ToHour    int            `gorm:"column:to_hour"`   // LOCAL hour in child's timezone
-	Ring      int            `gorm:"column:ring"`
 	ImagePath string         `gorm:"column:image_path"`
 	SortOrder int            `gorm:"column:sort_order"`
 	Version   int            `gorm:"column:version"`
@@ -76,7 +75,6 @@ func activityToDomain(m *activityModel) *domain.Activity {
 		Label:     m.Label,
 		FromHour:  m.FromHour,
 		ToHour:    m.ToHour,
-		Ring:      m.Ring,
 		ImagePath: m.ImagePath,
 		SortOrder: m.SortOrder,
 		Version:   m.Version,
@@ -98,7 +96,6 @@ func activityFromDomain(a *domain.Activity) activityModel {
 		Label:     a.Label,
 		FromHour:  a.FromHour,
 		ToHour:    a.ToHour,
-		Ring:      a.Ring,
 		ImagePath: a.ImagePath,
 		SortOrder: a.SortOrder,
 		Version:   a.Version,

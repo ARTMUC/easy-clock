@@ -79,7 +79,6 @@ type eventActivityBody struct {
 	ImagePath string `json:"image_path" binding:"required"`
 	FromHour  int    `json:"from_hour"`
 	ToHour    int    `json:"to_hour"    binding:"required"`
-	Ring      int    `json:"ring"       binding:"required"`
 }
 
 func bindEventInput(c *gin.Context) (app.CreateEventInput, bool) {
@@ -117,7 +116,6 @@ func bindEventInput(c *gin.Context) (app.CreateEventInput, bool) {
 			ImagePath: a.ImagePath,
 			FromHour:  a.FromHour,
 			ToHour:    a.ToHour,
-			Ring:      a.Ring,
 		})
 	}
 	return in, true

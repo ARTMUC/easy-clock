@@ -71,8 +71,6 @@ const (
 	// profile config page
 	MsgActivities       = "activities"
 	MsgBackToChild      = "back_to_child"
-	MsgRing1            = "ring1"
-	MsgRing2            = "ring2"
 	MsgNoneYet          = "none_yet"
 	MsgAddActivity      = "add_activity"
 	MsgLabelEmoji       = "label_emoji"
@@ -80,7 +78,6 @@ const (
 	MsgLabelImagePath   = "label_image_path"
 	MsgLabelFromHour    = "label_from_hour"
 	MsgLabelToHour      = "label_to_hour"
-	MsgLabelRing        = "label_ring"
 	MsgLabelSortOrder   = "label_sort_order"
 	MsgPreset           = "preset"
 	MsgCustom           = "custom"
@@ -190,8 +187,6 @@ var messages = map[string]map[Lang]string{
 
 	MsgActivities:     {PL: "aktywności", EN: "activities"},
 	MsgBackToChild:    {PL: "← Wstecz", EN: "← Back"},
-	MsgRing1:          {PL: "Pierścień 1 (rano)", EN: "Ring 1 (AM)"},
-	MsgRing2:          {PL: "Pierścień 2 (popołudnie)", EN: "Ring 2 (PM)"},
 	MsgNoneYet:        {PL: "Brak.", EN: "None yet."},
 	MsgAddActivity:    {PL: "Dodaj aktywność", EN: "Add activity"},
 	MsgLabelEmoji:     {PL: "Emoji", EN: "Emoji"},
@@ -199,7 +194,6 @@ var messages = map[string]map[Lang]string{
 	MsgLabelImagePath: {PL: "Ścieżka do obrazka", EN: "Image path"},
 	MsgLabelFromHour:  {PL: "Godzina od (0–23)", EN: "From hour (0–23)"},
 	MsgLabelToHour:    {PL: "Godzina do (1–24)", EN: "To hour (1–24)"},
-	MsgLabelRing:      {PL: "Pierścień", EN: "Ring"},
 	MsgLabelSortOrder: {PL: "Kolejność", EN: "Sort order"},
 	MsgPreset:         {PL: "Gotowe", EN: "Preset"},
 	MsgCustom:         {PL: "Własne", EN: "Custom"},

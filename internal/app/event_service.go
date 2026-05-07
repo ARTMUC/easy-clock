@@ -41,7 +41,6 @@ type EventActivityInput struct {
 	Label     string
 	FromHour  int
 	ToHour    int
-	Ring      int
 	ImagePath string
 }
 
@@ -157,7 +156,6 @@ func (s *EventService) buildEventActivity(eventID string, in EventActivityInput)
 		Label:     in.Label,
 		FromHour:  in.FromHour,
 		ToHour:    in.ToHour,
-		Ring:      in.Ring,
 		ImagePath: in.ImagePath,
 		CreatedAt: now,
 		UpdatedAt: now,

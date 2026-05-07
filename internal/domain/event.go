@@ -29,7 +29,6 @@ type EventActivity struct {
 	Label     string
 	FromHour  int       // LOCAL hour in child's timezone (0–23)
 	ToHour    int       // LOCAL hour in child's timezone (0–23), exclusive
-	Ring      int       // 1=AM, 2=PM
 	ImagePath string
 	Version   int
 	CreatedAt time.Time // UTC

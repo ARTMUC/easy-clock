@@ -4,10 +4,11 @@ package domain
 // It is a projection — not an aggregate.
 // All resolution is done in the child's LOCAL timezone before this struct is populated.
 type ClockState struct {
-	Empty          bool
-	ProfileID      string
-	ProfileName    string
-	ProfileColor   string
-	ActiveActivity *Activity // activity whose FromHour–ToHour window contains the current local hour
-	AllActivities  []Activity
+	Empty               bool
+	ProfileID           string
+	ProfileName         string
+	ProfileColor        string
+	ActiveActivity      *Activity // activity whose FromHour–ToHour window contains the current local hour
+	AllActivities       []Activity
+	LocalOffsetMinutes  int // UTC offset of the child's timezone in minutes (e.g. +60 for CET, -300 for ET)
 }

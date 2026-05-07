@@ -43,6 +43,11 @@ func (s *ClockService) Resolve(ctx context.Context, clockToken string, now time.
 		return nil, fmt.Errorf("ClockService.Resolve: load timezone %q: %w", child.Timezone, err)
 	}
 	localNow := now.In(loc)
+	_, offsetSec := localNow.Zone()
+	withOffset := func(st *domain.ClockState) *domain.ClockState {
+		st.LocalOffsetMinutes = offsetSec / 60
+		return st
+	}
 
 	// 1. One-off events — highest priority.
 	events, err := s.eventRepo.FindForDate(ctx, child.ID, localNow.Format("2006-01-02"))
@@ -52,7 +57,7 @@ func (s *ClockService) Resolve(ctx context.Context, clockToken string, now time.
 	for i := range events {
 		e := &events[i]
 		if localTimeInRange(localNow, e.FromTime, e.ToTime) {
-			return resolveFromEvent(e, localNow), nil
+			return withOffset(resolveFromEvent(e, localNow)), nil
 		}
 	}
 
@@ -67,7 +72,7 @@ func (s *ClockService) Resolve(ctx context.Context, clockToken string, now time.
 		if err != nil {
 			return nil, fmt.Errorf("ClockService.Resolve: find schedule profile: %w", err)
 		}
-		return resolveFromProfile(profile, localNow), nil
+		return withOffset(resolveFromProfile(profile, localNow)), nil
 	}
 
 	// 3. Default profile fallback.
@@ -76,10 +81,10 @@ func (s *ClockService) Resolve(ctx context.Context, clockToken string, now time.
 		if err != nil {
 			return nil, fmt.Errorf("ClockService.Resolve: find default profile: %w", err)
 		}
-		return resolveFromProfile(profile, localNow), nil
+		return withOffset(resolveFromProfile(profile, localNow)), nil
 	}
 
-	return &domain.ClockState{Empty: true}, nil
+	return withOffset(&domain.ClockState{Empty: true}), nil
 }
 
 func resolveFromProfile(p *domain.Profile, localNow time.Time) *domain.ClockState {
@@ -114,7 +119,6 @@ func resolveFromEvent(e *domain.Event, localNow time.Time) *domain.ClockState {
 			Label:     ea.Label,
 			FromHour:  ea.FromHour,
 			ToHour:    ea.ToHour,
-			Ring:      ea.Ring,
 			ImagePath: ea.ImagePath,
 		}
 		activities[i] = a

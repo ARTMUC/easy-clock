@@ -15,7 +15,6 @@ type presetActivityModel struct {
 	Emoji     string         `gorm:"column:emoji"`
 	Label     string         `gorm:"column:label"`
 	ImagePath string         `gorm:"column:image_path"`
-	Ring      int            `gorm:"column:ring"`
 	SortOrder int            `gorm:"column:sort_order"`
 	Version   int            `gorm:"column:version"`
 	CreatedAt time.Time      `gorm:"column:created_at"`
@@ -63,7 +62,6 @@ func presetToDomain(m *presetActivityModel) domain.PresetActivity {
 		Emoji:     m.Emoji,
 		Label:     m.Label,
 		ImagePath: m.ImagePath,
-		Ring:      m.Ring,
 		SortOrder: m.SortOrder,
 		Version:   m.Version,
 		CreatedAt: m.CreatedAt,

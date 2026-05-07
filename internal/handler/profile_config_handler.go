@@ -45,7 +45,6 @@ func (h *ProfileConfigHandler) AddActivity(c *gin.Context) {
 	profileID := c.Param("id")
 	fromHour, _ := strconv.Atoi(c.PostForm("from_hour"))
 	toHour, _ := strconv.Atoi(c.PostForm("to_hour"))
-	ring, _ := strconv.Atoi(c.PostForm("ring"))
 	sortOrder, _ := strconv.Atoi(c.PostForm("sort_order"))
 
 	in := app.AddActivityInput{
@@ -54,7 +53,6 @@ func (h *ProfileConfigHandler) AddActivity(c *gin.Context) {
 		ImagePath: c.PostForm("image_path"),
 		FromHour:  fromHour,
 		ToHour:    toHour,
-		Ring:      ring,
 		SortOrder: sortOrder,
 	}
 	if _, err := h.profileSvc.AddActivity(c.Request.Context(), profileID, sessionUserID(c), in); err != nil {

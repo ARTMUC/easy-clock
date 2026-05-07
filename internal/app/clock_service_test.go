@@ -158,7 +158,7 @@ func TestClockService_defaultProfile(t *testing.T) {
 		ID:   "prof-1",
 		Name: "Default",
 		Activities: []domain.Activity{
-			{ID: "act-1", Emoji: "🌙", Label: "Sleep", FromHour: 22, ToHour: 24, Ring: 2},
+			{ID: "act-1", Emoji: "🌙", Label: "Sleep", FromHour: 22, ToHour: 24, },
 		},
 	}
 	svc := newSvc(
@@ -193,7 +193,7 @@ func TestClockService_scheduleTakesPrecedenceOverDefault(t *testing.T) {
 		ID:   "prof-sched",
 		Name: "Monday",
 		Activities: []domain.Activity{
-			{ID: "act-school", Label: "School", FromHour: 8, ToHour: 15, Ring: 1},
+			{ID: "act-school", Label: "School", FromHour: 8, ToHour: 15, },
 		},
 	}
 	// Monday = weekday 1
@@ -238,7 +238,7 @@ func TestClockService_eventTakesPrecedenceOverSchedule(t *testing.T) {
 		FromTime: "09:00:00",
 		ToTime:   "11:00:00",
 		Activities: []domain.EventActivity{
-			{ID: "ea-1", Label: "Doctor", FromHour: 9, ToHour: 11, Ring: 1},
+			{ID: "ea-1", Label: "Doctor", FromHour: 9, ToHour: 11, },
 		},
 	}
 	assignment := &domain.DayAssignment{ChildID: "child-4", DayOfWeek: 1, ProfileID: "prof-sched"}
@@ -272,7 +272,7 @@ func TestClockService_timezone(t *testing.T) {
 		ID:   "prof-ny",
 		Name: "NY Profile",
 		Activities: []domain.Activity{
-			{ID: "act-morning", Label: "Breakfast", FromHour: 7, ToHour: 9, Ring: 1},
+			{ID: "act-morning", Label: "Breakfast", FromHour: 7, ToHour: 9, },
 		},
 	}
 	svc := newSvc(

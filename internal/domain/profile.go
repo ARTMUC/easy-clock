@@ -25,7 +25,6 @@ type Activity struct {
 	Label     string
 	FromHour  int       // LOCAL hour in child's timezone (0–23)
 	ToHour    int       // LOCAL hour in child's timezone (0–23), exclusive
-	Ring      int       // 1=AM, 2=PM
 	ImagePath string
 	SortOrder int
 	Version   int
@@ -55,7 +54,7 @@ func NewProfile(childID, name, color string) (*Profile, error) {
 	}, nil
 }
 
-func NewActivity(profileID, presetID, emoji, label, imagePath string, fromHour, toHour, ring, sortOrder int) (*Activity, error) {
+func NewActivity(profileID, presetID, emoji, label, imagePath string, fromHour, toHour, sortOrder int) (*Activity, error) {
 	if fromHour >= toHour {
 		return nil, ErrInvalidHourRange
 	}
@@ -75,7 +74,6 @@ func NewActivity(profileID, presetID, emoji, label, imagePath string, fromHour, 
 		Label:     label,
 		FromHour:  fromHour,
 		ToHour:    toHour,
-		Ring:      ring,
 		ImagePath: imagePath,
 		SortOrder: sortOrder,
 		CreatedAt: now,
@@ -92,7 +90,7 @@ func (p *Profile) AddActivity(a Activity) error {
 		return ErrImageRequired
 	}
 	for _, existing := range p.Activities {
-		if existing.Ring == a.Ring && hoursOverlap(existing.FromHour, existing.ToHour, a.FromHour, a.ToHour) {
+		if hoursOverlap(existing.FromHour, existing.ToHour, a.FromHour, a.ToHour) {
 			return ErrActivityOverlap
 		}
 	}

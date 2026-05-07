@@ -11,14 +11,13 @@ type PresetActivity struct {
 	Emoji     string
 	Label     string
 	ImagePath string
-	Ring      int
 	SortOrder int
 	Version   int
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
-func NewPresetActivity(emoji, label, imagePath string, ring, sortOrder int) (*PresetActivity, error) {
+func NewPresetActivity(emoji, label, imagePath string, sortOrder int) (*PresetActivity, error) {
 	id, err := uuid.NewV7()
 	if err != nil {
 		return nil, err
@@ -29,7 +28,6 @@ func NewPresetActivity(emoji, label, imagePath string, ring, sortOrder int) (*Pr
 		Emoji:     emoji,
 		Label:     label,
 		ImagePath: imagePath,
-		Ring:      ring,
 		SortOrder: sortOrder,
 		CreatedAt: now,
 		UpdatedAt: now,

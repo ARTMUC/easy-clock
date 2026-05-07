@@ -84,7 +84,6 @@ func (h *ProfileHandler) AddActivity(c *gin.Context) {
 		ImagePath string `json:"image_path"`
 		FromHour  int    `json:"from_hour"`
 		ToHour    int    `json:"to_hour"     binding:"required"`
-		Ring      int    `json:"ring"        binding:"required"`
 		SortOrder int    `json:"sort_order"`
 	}
 	if err := c.ShouldBindJSON(&body); err != nil {
@@ -98,7 +97,6 @@ func (h *ProfileHandler) AddActivity(c *gin.Context) {
 		ImagePath: body.ImagePath,
 		FromHour:  body.FromHour,
 		ToHour:    body.ToHour,
-		Ring:      body.Ring,
 		SortOrder: body.SortOrder,
 	}
 	activity, err := h.svc.AddActivity(c.Request.Context(), c.Param("id"), sessionUserID(c), in)
@@ -116,7 +114,6 @@ func (h *ProfileHandler) UpdateActivity(c *gin.Context) {
 		ImagePath string `json:"image_path"  binding:"required"`
 		FromHour  int    `json:"from_hour"`
 		ToHour    int    `json:"to_hour"     binding:"required"`
-		Ring      int    `json:"ring"        binding:"required"`
 		SortOrder int    `json:"sort_order"`
 	}
 	if err := c.ShouldBindJSON(&body); err != nil {
@@ -129,7 +126,6 @@ func (h *ProfileHandler) UpdateActivity(c *gin.Context) {
 		ImagePath: body.ImagePath,
 		FromHour:  body.FromHour,
 		ToHour:    body.ToHour,
-		Ring:      body.Ring,
 		SortOrder: body.SortOrder,
 	}
 	activity, err := h.svc.UpdateActivity(c.Request.Context(), c.Param("id"), sessionUserID(c), in)
